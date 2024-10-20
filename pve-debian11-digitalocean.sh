@@ -58,7 +58,7 @@ openssl genrsa -out /tmp/proxmox-cert/pve-ssl.key 2048
 
 touch /tmp/proxmox-cert/openssl.cnf
 
-cat <<EOL > openssl.cnf
+cat <<EOL > /tmp/proxmox-cert/openssl.cnf
 [req]
 distinguished_name = req_distinguished_name
 req_extensions = req_ext
