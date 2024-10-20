@@ -24,7 +24,6 @@ apt install -f -y
 update-grub
 
 cat <<EOT >> /etc/network/interfaces
-
 auto vmbr0
 iface vmbr0 inet static
         address 192.168.1.254/24
@@ -48,13 +47,18 @@ EOT
 
 sed -i 's/^INTERFACESv4=""/INTERFACESv4="vmbr0"/' /etc/default/isc-dhcp-server
 
+NEW_IP=$(ip a | grep eth0 | head -n 2 | awk '{print $2}' | tail -n 1 | cut -d"/" -f1)
+sed -i "s/^127\.0\.1\.1/$NEW_IP/" /etc/hosts
+
 HOSTNAME=$(hostname)
 
 mkdir /tmp/proxmox-cert
 
 openssl genrsa -out /tmp/proxmox-cert/pve-ssl.key 2048
 
-cat <<EOL > /tmp/proxmox-cert/openssl.cnf
+touch /tmp/proxmox-cert/openssl.cnf
+
+cat <<EOL > openssl.cnf
 [req]
 distinguished_name = req_distinguished_name
 req_extensions = req_ext
