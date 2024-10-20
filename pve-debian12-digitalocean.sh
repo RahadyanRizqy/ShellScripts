@@ -35,7 +35,7 @@ iface vmbr0 inet static
         post-down iptables -t nat -D POSTROUTING -s '192.168.1.0/24' -o eth0 -j MASQUERADE
 EOT
 
-cat <<EOT >> etc/dhcp/dhcpd.conf
+cat <<EOT >> /etc/dhcp/dhcpd.conf
 
 subnet 192.168.1.0 netmask 255.255.255.0 {
   range 192.168.1.1 192.168.1.253;
@@ -58,7 +58,7 @@ openssl genrsa -out /tmp/proxmox-cert/pve-ssl.key 2048
 
 touch /tmp/proxmox-cert/openssl.cnf
 
-cat <<EOL > openssl.cnf
+cat <<EOL > /tmp/proxmox-cert/openssl.cnf
 [req]
 distinguished_name = req_distinguished_name
 req_extensions = req_ext
