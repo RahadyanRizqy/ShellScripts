@@ -114,6 +114,29 @@ ExecStart=/bin/systemctl restart isc-dhcp-server
 WantedBy=multi-user.target
 EOL
 
+cp -v /etc/apt/sources.list /etc/apt/sources.list.bak
+cp -v /etc/apt/sources.list.d/ceph.list /etc/apt/sources.list.d/ceph.list.bak
+
+cat << EOF | sudo tee /etc/apt/sources.list > /dev/null
+deb http://ftp.debian.org/debian bookworm main contrib
+deb http://ftp.debian.org/debian bookworm-updates main contrib
+
+# Proxmox VE pve-no-subscription repository provided by proxmox.com,
+# NOT recommended for production use
+deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+
+# security updates
+deb http://security.debian.org/debian-security bookworm-security main contrib
+EOF
+
+cat << EOF | sudo tee /etc/apt/sources.list.d/ceph.list > /dev/null
+deb http://download.proxmox.com/debian/ceph-reef bookworm no-subscription
+EOF
+
+cat << EOF | sudo tee -a /etc/apt/sources.list > /dev/null
+deb http://download.proxmox.com/debian/ceph-quincy bookworm no-subscription
+EOF
+
 systemctl enable network-restart
 systemctl enable dhcp-restart
 
