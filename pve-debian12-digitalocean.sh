@@ -133,7 +133,7 @@ cat << EOF | sudo tee /etc/apt/sources.list.d/ceph.list > /dev/null
 deb http://download.proxmox.com/debian/ceph-reef bookworm no-subscription
 EOF
 
-cat << EOF | sudo tee -a /etc/apt/sources.list > /dev/null
+cat << EOF | sudo tee -a /etc/apt/sources.list.d/ceph.list > /dev/null
 deb http://download.proxmox.com/debian/ceph-quincy bookworm no-subscription
 EOF
 
