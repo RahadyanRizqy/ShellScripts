@@ -114,6 +114,18 @@ ExecStart=/bin/systemctl restart isc-dhcp-server
 WantedBy=multi-user.target
 EOL
 
+cp -v /etc/apt/sources.list /etc/apt/sources.list.bak
+
+cat << EOF | sudo tee /etc/apt/sources.list > /dev/null
+deb http://ftp.debian.org/debian bookworm main contrib non-free non-free-firmware
+deb http://security.debian.org bookworm-security main contrib non-free non-free-firmware
+deb http://ftp.debian.org/debian bookworm-updates main contrib non-free non-free-firmware
+deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+EOF
+
+cp -v /etc/apt/sources.list.d/pve-install-repo.list /etc/apt/sources.list.d/pve-install-repo.list.bak
+echo "" > /etc/apt/sources.list.d/pve-install-repo.list
+
 systemctl enable network-restart
 systemctl enable dhcp-restart
 
