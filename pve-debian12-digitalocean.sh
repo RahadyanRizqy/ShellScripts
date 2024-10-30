@@ -35,6 +35,8 @@ iface vmbr0 inet static
         post-down iptables -t nat -D POSTROUTING -s '192.168.1.0/24' -o eth0 -j MASQUERADE
 EOT
 
+cat /etc/network/interfaces
+
 cat <<EOT >> /etc/dhcp/dhcpd.conf
 
 subnet 192.168.1.0 netmask 255.255.255.0 {
