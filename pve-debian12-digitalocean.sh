@@ -130,5 +130,3 @@ echo "" > /etc/apt/sources.list.d/pve-install-repo.list
 
 systemctl enable network-restart
 systemctl enable dhcp-restart
-
-systemctl reboot
