@@ -1,27 +1,20 @@
 export DEBIAN_FRONTEND=noninteractive
 
-echo "deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+systemctl stop apparmor
 
-wget https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+apt install bridge-utils -y
 
-sha512sum /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+apt install ifupdown2 -y
 
-apt update && apt upgrade -y && apt full-upgrade -y && apt dist-upgrade -y
+ip link add name vmbr0 type bridge
 
-apt install proxmox-default-kernel -y
+ip addr add 192.168.1.254/24 dev vmbr0
 
-apt install proxmox-ve postfix open-iscsi chrony -y
+ip link set vmbr0 up
 
-apt remove linux-image-amd64 'linux-image-6.1*' -y
+echo 1 | sudo tee /proc/sys/net/ipv4/ip_forward
 
-apt install isc-dhcp-server -y
-
-a=/tmp/$(ls -la /tmp | grep ifupdown | awk '{print $9}')
-rm $a
-
-apt install -f -y
-
-update-grub
+sudo iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o eth0 -j MASQUERADE
 
 cat <<EOT >> /etc/network/interfaces
 auto vmbr0
@@ -35,7 +28,34 @@ iface vmbr0 inet static
         post-down iptables -t nat -D POSTROUTING -s '192.168.1.0/24' -o eth0 -j MASQUERADE
 EOT
 
-cat /etc/network/interfaces
+echo "deb [arch=amd64] http://download.proxmox.com/debian/pve bookworm pve-no-subscription" > /etc/apt/sources.list.d/pve-install-repo.list
+
+wget https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg -O /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+
+sha512sum /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+
+apt update && apt upgrade -y && apt full-upgrade -y && apt dist-upgrade -y
+
+apt install proxmox-default-kernel -y
+
+apt install proxmox-ve postfix open-iscsi chrony -y
+
+a=/tmp/$(ls -la /tmp | grep ifupdown | awk '{print $9}')
+rm $a
+
+apt install -f -y
+
+dpkg --configure -a
+
+apt remove linux-image-amd64 'linux-image-6.1*' -y
+
+update-grub
+
+###########
+# NETWORK #
+###########
+
+apt install isc-dhcp-server -y
 
 cat <<EOT >> /etc/dhcp/dhcpd.conf
 
@@ -130,3 +150,7 @@ echo "" > /etc/apt/sources.list.d/pve-install-repo.list
 
 systemctl enable network-restart
 systemctl enable dhcp-restart
+
+chmod 644 /etc/network/interfaces
+
+reboot
