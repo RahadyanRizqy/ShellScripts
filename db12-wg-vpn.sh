@@ -33,9 +33,11 @@ echo "WireGuard configuration created at: /etc/wireguard/wg0.conf"
 
 sed -i 's/10086/65534/g' static/app/proxy.js
 sed -i 's/10086/65534/g' dashboard.py
-sed -i 's/^Port 22/Port 65535/' /etc/ssh/sshd_config
+sed -i 's/^#Port 22/Port 65535/' /etc/ssh/sshd_config
 
 cd /root/WGDashboard/src
 ./wgd.sh start
+
+unset prikey
 
 sudo systemctl restart sshd
