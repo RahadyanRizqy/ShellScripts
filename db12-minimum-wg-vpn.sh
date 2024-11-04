@@ -39,12 +39,3 @@ sed -i 's/#LLMNR=yes/LLMNR=no/g' /etc/systemd/resolved.conf
 
 cd /root/WGDashboard/src
 ./wgd.sh start
-
-systemctl stop systemd-resolved
-systemctl disable systemd-resolved
-systemctl stop avahi-daemon
-systemctl disable avahi-daemon
-systemctl mask systemd-resolved
-
-
-systemctl stop avahi-daemon
