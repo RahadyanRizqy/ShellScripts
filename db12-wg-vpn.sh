@@ -3,6 +3,7 @@
 ###
 
 apt update
+apt-get remove exim4 exim4-base exim4-config exim4-daemon-light -y
 apt install git -y
 apt-get install sudo git iptables -y && \
 sudo apt-get update && \
