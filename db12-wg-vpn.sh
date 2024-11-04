@@ -1,3 +1,7 @@
+### [PRE EXECUTE]
+### $prikey variable must be declared
+###
+
 apt update
 apt install git -y
 apt-get install sudo git iptables -y && \
@@ -9,9 +13,6 @@ chmod +x ./wgd.sh && \
 ./wgd.sh install && \
 sudo echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf && \
 sudo sysctl -p /etc/sysctl.conf
-
-wg genkey | tee /etc/wireguard/private.key | wg pubkey > /etc/wireguard/public.key
-prikey=$(cat /etc/wireguard/private.key)
 
 cat << EOF > /etc/wireguard/wg0.conf
 [Interface]
